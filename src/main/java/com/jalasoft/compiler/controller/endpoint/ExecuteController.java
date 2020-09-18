@@ -2,6 +2,7 @@ package com.jalasoft.compiler.controller.endpoint;
 
 import com.jalasoft.compiler.controller.component.JavaPropeties;
 import com.jalasoft.compiler.controller.request.RequestParam;
+import com.jalasoft.compiler.controller.service.FileService;
 import com.jalasoft.compiler.model.Execute;
 import com.jalasoft.compiler.model.command.JavaCommand;
 import com.jalasoft.compiler.model.exception.CommandException;
@@ -22,13 +23,18 @@ public class ExecuteController {
     @Autowired
     private JavaPropeties javaPropeties;
 
+    @Autowired
+    private FileService fileService;
+
     @PostMapping("/execute")
     public Result executeJava(RequestParam param) throws CommandException, ExecuteException, Exception {
         try {
             param.validate();
+            File javaFile = this.fileService.store(param.getFile(), this.javaPropeties.getProjectFolder());
+            JavaParameter parameter = new JavaParameter(javaFile,  this.javaPropeties.getVersion8());
             JavaCommand command = new JavaCommand();
             Execute execute = new Execute();
-            return execute.executeJava(command.buildCommand(new JavaParameter(null,  javaPropeties.getProjectFolder())));
+            return execute.executeJava(command.buildCommand(parameter));
         } catch (CommandException ex) {
             throw ex;
         } catch (ExecuteException ex) {

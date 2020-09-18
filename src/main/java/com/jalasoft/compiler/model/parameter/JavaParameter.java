@@ -1,5 +1,7 @@
 package com.jalasoft.compiler.model.parameter;
 
+import com.jalasoft.compiler.model.exception.CommandException;
+
 import java.io.File;
 
 /**
@@ -20,5 +22,11 @@ public class JavaParameter extends Parameter {
 
     public void setJavaFolder(String javaFolder) {
         this.javaFolder = javaFolder;
+    }
+
+    public void validate() throws CommandException {
+        if (this.javaFolder == null || "".equals(this.javaFolder)) {
+            throw new CommandException("failed");
+        }
     }
 }
