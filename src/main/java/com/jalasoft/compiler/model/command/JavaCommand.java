@@ -9,7 +9,7 @@ import org.apache.commons.io.FilenameUtils;
  * @author HP
  * @version 1.1
  */
-public class JavaCommand implements ICommandBuilder {
+public class JavaCommand implements ICommandBuilder<JavaParameter> {
 
     private static  final String JAVA_COMPILE = "javac ";
     private static final String JAVA_EXECUTE = "java ";
@@ -17,8 +17,7 @@ public class JavaCommand implements ICommandBuilder {
     private static final String JAVA_AND = " && ";
     private static final String SPACE = " ";
 
-    public String buildCommand(Parameter parameter) throws CommandException {
-        JavaParameter javaParameter = (JavaParameter)parameter;
+    public String buildCommand(JavaParameter javaParameter) throws CommandException {
         javaParameter.validate();
         StringBuilder command = new StringBuilder();
         command.append(javaParameter.getJavaFolder())
