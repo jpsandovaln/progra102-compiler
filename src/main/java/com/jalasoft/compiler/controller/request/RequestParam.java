@@ -1,5 +1,6 @@
 package com.jalasoft.compiler.controller.request;
 
+import com.jalasoft.compiler.common.ConfigurationProperty;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -44,11 +45,14 @@ public class RequestParam {
     public void validate() throws Exception {
         /*if(file.getOriginalFilename().contains("..")) {
                 throw new
-            }*/
+         }*/
         if (this.getLang() == null || "".equals(this.getLang())) {
             throw new Exception("failed");
         }
 
+        if (!ConfigurationProperty.getLanguages().contains(this.lang)) {
+            throw new Exception("invalid language");
+        }
         if (this.getVersion() == null || "".equals(this.getVersion())) {
             throw new Exception("failed");
         }
