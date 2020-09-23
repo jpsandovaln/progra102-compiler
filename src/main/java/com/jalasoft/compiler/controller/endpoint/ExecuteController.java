@@ -1,6 +1,8 @@
 package com.jalasoft.compiler.controller.endpoint;
 
+import com.jalasoft.compiler.common.exception.InvalidDataException;
 import com.jalasoft.compiler.controller.component.JavaPropeties;
+import com.jalasoft.compiler.controller.exception.FileException;
 import com.jalasoft.compiler.controller.request.RequestParam;
 import com.jalasoft.compiler.controller.response.ErrorResponse;
 import com.jalasoft.compiler.controller.response.OKResponse;
@@ -46,6 +48,14 @@ public class ExecuteController {
             return ResponseEntity.ok().body(
                     new OKResponse<Integer>(HttpServletResponse.SC_OK, result.getResultConsonle(), result.getPid())
             );
+        } catch (InvalidDataException ex) {
+            return ResponseEntity.badRequest().body(
+                    new ErrorResponse<Integer>(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage())
+            );
+        } catch (FileException ex) {
+            return ResponseEntity.badRequest().body(
+                    new ErrorResponse<Integer>(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage())
+            );
         } catch (CommandException ex) {
             return ResponseEntity.badRequest().body(
                     new ErrorResponse<Integer>(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage())
@@ -53,10 +63,6 @@ public class ExecuteController {
         } catch (ExecuteException ex) {
             return ResponseEntity.badRequest().body(
                     new ErrorResponse<Integer>(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage())
-            );
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(
-                    new ErrorResponse<String>(Integer.toString(HttpServletResponse.SC_BAD_REQUEST), ex.getMessage())
             );
         }
     }

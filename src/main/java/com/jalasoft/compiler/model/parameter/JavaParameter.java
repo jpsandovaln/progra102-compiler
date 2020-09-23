@@ -1,8 +1,14 @@
 package com.jalasoft.compiler.model.parameter;
 
+import com.jalasoft.compiler.common.exception.InvalidDataException;
+import com.jalasoft.compiler.common.validation.IValidationStrategy;
+import com.jalasoft.compiler.common.validation.NotNullOrEmpty;
+import com.jalasoft.compiler.common.validation.ValidationContext;
 import com.jalasoft.compiler.model.exception.CommandException;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author HP
@@ -24,9 +30,11 @@ public class JavaParameter extends Parameter {
         this.javaFolder = javaFolder;
     }
 
-    public void validate() throws CommandException {
-        if (this.javaFolder == null || "".equals(this.javaFolder)) {
-            throw new CommandException("failed");
-        }
+    public void validate() throws InvalidDataException {
+        List<IValidationStrategy> validationStrategyList = new ArrayList<>();
+        validationStrategyList.add(new NotNullOrEmpty("javaFolder", this.javaFolder));
+
+        ValidationContext context = new ValidationContext(validationStrategyList);
+        context.validation();
     }
 }

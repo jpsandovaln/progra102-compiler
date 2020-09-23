@@ -1,7 +1,16 @@
 package com.jalasoft.compiler.controller.request;
 
 import com.jalasoft.compiler.common.ConfigurationProperty;
+import com.jalasoft.compiler.common.exception.InvalidDataException;
+import com.jalasoft.compiler.common.validation.IValidationStrategy;
+import com.jalasoft.compiler.common.validation.LanguageValidation;
+import com.jalasoft.compiler.common.validation.MultipartFileValidation;
+import com.jalasoft.compiler.common.validation.NotNullOrEmpty;
+import com.jalasoft.compiler.common.validation.ValidationContext;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author HP
@@ -42,23 +51,14 @@ public class RequestParam {
         this.file = file;
     }
 
-    public void validate() throws Exception {
-        /*if(file.getOriginalFilename().contains("..")) {
-                throw new
-         }*/
-        if (this.getLang() == null || "".equals(this.getLang())) {
-            throw new Exception("failed");
-        }
+    public void validate() throws InvalidDataException {
+        List<IValidationStrategy> validationStrategyList = new ArrayList<>();
+        validationStrategyList.add(new NotNullOrEmpty("lang", this.lang));
+        validationStrategyList.add(new LanguageValidation(this.lang));
+        validationStrategyList.add(new NotNullOrEmpty("version", this.version));
+        validationStrategyList.add(new MultipartFileValidation(this.file));
 
-        if (!ConfigurationProperty.getLanguages().contains(this.lang)) {
-            throw new Exception("invalid language");
-        }
-        if (this.getVersion() == null || "".equals(this.getVersion())) {
-            throw new Exception("failed");
-        }
-
-        if (this.getFile().getOriginalFilename().contains("..")) {
-            throw new Exception("failed");
-        }
+        ValidationContext context = new ValidationContext(validationStrategyList);
+        context.validation();
     }
 }
