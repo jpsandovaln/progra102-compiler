@@ -6,11 +6,8 @@ import com.jalasoft.compiler.controller.exception.FileException;
 import com.jalasoft.compiler.controller.request.RequestParam;
 import com.jalasoft.compiler.controller.response.ErrorResponse;
 import com.jalasoft.compiler.controller.response.OKResponse;
-import com.jalasoft.compiler.controller.response.Response;
 import com.jalasoft.compiler.controller.service.FileService;
-import com.jalasoft.compiler.model.Execute;
-import com.jalasoft.compiler.model.command.ICommandBuilder;
-import com.jalasoft.compiler.model.command.JavaCommand;
+import com.jalasoft.compiler.model.ConvertFacade;
 import com.jalasoft.compiler.model.exception.CommandException;
 import com.jalasoft.compiler.model.exception.ExecuteException;
 import com.jalasoft.compiler.model.parameter.JavaParameter;
@@ -41,10 +38,7 @@ public class ExecuteController {
             param.validate();
             File javaFile = this.fileService.store(param.getFile(), this.javaPropeties.getProjectFolder());
             JavaParameter parameter = new JavaParameter(javaFile,  this.javaPropeties.getVersion8());
-            ICommandBuilder<JavaParameter> command = new JavaCommand();
-            String commandResult = command.buildCommand(parameter);
-            Execute execute = new Execute();
-            Result result = execute.executeJava(commandResult);
+            Result result = ConvertFacade.compile(parameter, param.getLang());
             return ResponseEntity.ok().body(
                     new OKResponse<Integer>(HttpServletResponse.SC_OK, result.getResultConsonle(), result.getPid())
             );
