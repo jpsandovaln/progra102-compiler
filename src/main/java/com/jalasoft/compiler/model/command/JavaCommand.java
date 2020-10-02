@@ -11,7 +11,6 @@ import org.apache.commons.io.FilenameUtils;
  * @version 1.1
  */
 class JavaCommand implements ICommandBuilder<JavaParameter> {
-
     private static  final String JAVA_COMPILE = "javac ";
     private static final String JAVA_EXECUTE = "java ";
     private static final String JAVA_CP_PARAM = "-cp ";
@@ -19,6 +18,9 @@ class JavaCommand implements ICommandBuilder<JavaParameter> {
     private static final String SPACE = " ";
 
     public String buildCommand(JavaParameter javaParameter) throws CommandException, InvalidDataException {
+        if (javaParameter == null) {
+            throw new InvalidDataException();
+        }
         javaParameter.validate();
         StringBuilder command = new StringBuilder();
         command.append(javaParameter.getJavaFolder())
